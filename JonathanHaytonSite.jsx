@@ -443,7 +443,7 @@ const AboutPage = ({ setPage }) => {
                 <p>I began my career in financial services over twenty years ago, working for one of the UK's largest advice firms. I learned a great deal — but I also saw how easily good advice can be compromised when targets and tied products get in the way.</p>
                 <p>So I set up my own independent practice here in Worcester, built on a simple idea: treat every client's money as carefully as you'd treat your own family's.</p>
                 <p>Today I advise more than 350 households across Worcestershire and beyond — from young families taking out their first protection policy, to business owners planning an exit, to retirees making their pension last a lifetime.</p>
-                <p>When I'm not at my desk, you'll find me walking the Malvern Hills with my wife and our spaniel, coaching junior cricket, or making slow progress on my allotment.</p>
+                <p>When I'm not at my desk, you'll find me in the gym, going for a run, or spending time with my family.</p>
               </div>
             </div>
             <div className="grid sm:grid-cols-2 gap-5 mt-10">
