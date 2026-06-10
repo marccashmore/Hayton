@@ -608,7 +608,7 @@ const ContactPage = () => {
   const update = (k) => (e) => setForm({ ...form, [k]: e.target.value });
   const submit = async (e) => {
     e.preventDefault();
-    if (e.target.botcheck.value) return; // honeypot — silently drop bots
+    if (e.target.botcheck.checked) return; // honeypot — silently drop bots
     setSending(true);
     setError(false);
     try {
@@ -650,9 +650,15 @@ const ContactPage = () => {
                 <div className="w-12 h-12 rounded-xl bg-sage-deep flex items-center justify-center shrink-0">
                   <Icon className="w-5 h-5 text-emerald-700" />
                 </div>
-                <div>
+                <div className="min-w-0">
                   <h3 className="font-bold text-emerald-950">{title}</h3>
-                  {lines.map((l) => <p key={l} className="text-stone-600 text-sm">{l}</p>)}
+                  {lines.map((l) => (
+                    <p key={l} className="text-stone-600 text-sm break-words">
+                      {l.includes("@")
+                        ? <a href={`mailto:${l}`} className="underline decoration-emerald-300 underline-offset-2 hover:text-emerald-700 transition-colors">{l}</a>
+                        : l}
+                    </p>
+                  ))}
                 </div>
               </div>
             ))}
@@ -688,7 +694,7 @@ const ContactPage = () => {
                   <input type="checkbox" name="botcheck" tabIndex="-1" autoComplete="off" className="hidden" aria-hidden="true" />
                   {error && (
                     <p className="text-red-700 text-sm bg-red-50 border border-red-200 rounded-xl px-4 py-3">
-                      Sorry, something went wrong sending your message. Please try again, or email jonathan@haytonfinancial.co.uk directly.
+                      Sorry, something went wrong sending your message. Please try again, or email <a href="mailto:jonathan@haytonfinancial.co.uk" className="underline">jonathan@haytonfinancial.co.uk</a> directly.
                     </p>
                   )}
                   <Button className="w-full justify-center" disabled={sending}>
@@ -738,7 +744,7 @@ const Footer = ({ setPage }) => (
           <h4 className="font-bold text-amber-50 mb-4 text-sm uppercase tracking-wider">Contact</h4>
           <ul className="space-y-3 text-sm text-emerald-300/80">
             <li className="flex gap-2 items-start"><Phone className="w-4 h-4 mt-0.5 shrink-0" /> 01905 000 000</li>
-            <li className="flex gap-2 items-start"><Mail className="w-4 h-4 mt-0.5 shrink-0" /> jonathan@haytonfinancial.co.uk</li>
+            <li className="flex gap-2 items-start"><Mail className="w-4 h-4 mt-0.5 shrink-0" /> <a href="mailto:jonathan@haytonfinancial.co.uk" className="min-w-0 break-words hover:text-amber-50 transition-colors">jonathan@haytonfinancial.co.uk</a></li>
             <li className="flex gap-2 items-start"><MapPin className="w-4 h-4 mt-0.5 shrink-0" /> 12 Foregate Street, Worcester WR1 1AA</li>
           </ul>
         </div>
