@@ -119,7 +119,7 @@ const Placeholder = ({ label, icon: Icon = Users, ratio = "aspect-[4/3]", rounde
 /* ------------------------------------------------------------------ */
 /*  Shared UI                                                          */
 /* ------------------------------------------------------------------ */
-const Button = ({ children, onClick, variant = "primary", className = "" }) => {
+const Button = ({ children, onClick, variant = "primary", className = "", ...rest }) => {
   const base = "inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-sm transition-all duration-300 group";
   const styles = {
     primary: "bg-emerald-800 text-amber-50 hover:bg-emerald-700 hover:shadow-lg hover:shadow-emerald-900/25 hover:-translate-y-0.5",
@@ -127,7 +127,7 @@ const Button = ({ children, onClick, variant = "primary", className = "" }) => {
     outline: "border-2 border-emerald-800 text-emerald-900 hover:bg-emerald-800 hover:text-amber-50",
   };
   return (
-    <button onClick={onClick} className={`${base} ${styles[variant]} ${className}`}>
+    <button onClick={onClick} className={`${base} ${styles[variant]} ${className} disabled:opacity-60 disabled:cursor-not-allowed`} {...rest}>
       {children}
       <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
     </button>
@@ -603,8 +603,37 @@ const ContactPage = () => {
   const ref = useReveal();
   const [form, setForm] = useState({ name: "", email: "", phone: "", topic: "Retirement & pensions", message: "" });
   const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState(false);
   const update = (k) => (e) => setForm({ ...form, [k]: e.target.value });
-  const submit = (e) => { e.preventDefault(); setSent(true); };
+  const submit = async (e) => {
+    e.preventDefault();
+    if (e.target.botcheck.value) return; // honeypot — silently drop bots
+    setSending(true);
+    setError(false);
+    try {
+      const res = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          access_key: "96ad84a7-0a64-4754-a458-b579e1cb7b77",
+          subject: `Website enquiry: ${form.topic} — ${form.name}`,
+          from_name: "Jonathan Hayton website",
+          name: form.name,
+          email: form.email,
+          phone: form.phone || "Not provided",
+          topic: form.topic,
+          message: form.message,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) setSent(true);
+      else setError(true);
+    } catch {
+      setError(true);
+    }
+    setSending(false);
+  };
   const inputCls = "w-full bg-amber-50 border border-emerald-900/10 rounded-xl px-4 py-3 text-emerald-950 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-shadow";
   return (
     <div ref={ref}>
@@ -656,7 +685,15 @@ const ContactPage = () => {
                     </select>
                   </div>
                   <textarea required rows={5} className={inputCls} placeholder="Tell me a little about your situation…" value={form.message} onChange={update("message")} />
-                  <Button className="w-full justify-center">Send message</Button>
+                  <input type="checkbox" name="botcheck" tabIndex="-1" autoComplete="off" className="hidden" aria-hidden="true" />
+                  {error && (
+                    <p className="text-red-700 text-sm bg-red-50 border border-red-200 rounded-xl px-4 py-3">
+                      Sorry, something went wrong sending your message. Please try again, or email jonathan@haytonfinancial.co.uk directly.
+                    </p>
+                  )}
+                  <Button className="w-full justify-center" disabled={sending}>
+                    {sending ? "Sending…" : "Send message"}
+                  </Button>
                   <p className="text-stone-400 text-xs text-center">Your details are kept private and never shared with third parties.</p>
                 </form>
               )}
