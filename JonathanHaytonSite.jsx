@@ -4,6 +4,7 @@ import {
   HeartHandshake, Home, Phone, Mail, MapPin, ChevronDown, Quote,
   CheckCircle2, Calendar, FileText, Compass, Star, Award, Users, Clock
 } from "lucide-react";
+import portrait from "./jonathan-hayton-web.webp";
 
 /* ------------------------------------------------------------------ */
 /*  Global styles & keyframe animations                               */
@@ -329,7 +330,8 @@ const HomePage = ({ setPage }) => {
           <div className="anim-fadeUp hidden md:block" style={{ animationDelay: ".25s" }}>
             <div className="relative">
               <div className="absolute -inset-4 bg-emerald-700/30 rounded-3xl rotate-3" />
-              <Placeholder label="Jonathan Hayton — portrait" icon={Users} ratio="aspect-[4/5]" rounded="rounded-3xl" />
+              <img src={portrait} alt="Jonathan Hayton, Independent Financial Advisor"
+                className="relative w-full aspect-[4/5] object-cover rounded-3xl shadow-2xl" />
             </div>
           </div>
         </div>
